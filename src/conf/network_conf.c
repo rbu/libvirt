@@ -681,6 +681,13 @@ virNetworkDefParseXML(xmlXPathContextPtr ctxt)
             def->forwardType = VIR_NETWORK_FORWARD_NAT;
         }
 
+        tmp = virXPathString("string(./forward[1]/@adjustFirewall)", ctxt);
+        if (tmp) {
+            def->adjustFirewall = (STREQ(tmp, "off") ? 0 : 1);
+        } else {
+            def->adjustFirewall = 1;
+        }
+        VIR_FREE(tmp);
 
         def->forwardDev = virXPathString("string(./forward[1]/@dev)", ctxt);
     } else {
@@ -859,7 +866,9 @@ char *virNetworkDefFormat(const virNetworkDefPtr def)
             } else {
                 virBufferAddLit(&buf, "  <forward");
             }
-            virBufferVSprintf(&buf, " mode='%s'/>\n", mode);
+            virBufferVSprintf(&buf, " mode='%s'", mode);
+            virBufferVSprintf(&buf, " adjustFirewall='%s'", def->adjustFirewall ? "on" : "off");
+            virBufferAddLit(&buf, "/>\n");
         }
     }
 

@@ -1147,6 +1147,10 @@ networkAddGeneralIptablesRules(struct network_driver *driver,
             break;
     }
 
+    if (! network->def->adjustFirewall) {
+        return 1;
+    }
+
     /* allow DHCP requests through to dnsmasq */
 
     if (iptablesAddTcpInput(driver->iptables, AF_INET,
@@ -1372,6 +1376,10 @@ networkRemoveIptablesRules(struct network_driver *driver,
 {
     int ii;
     virNetworkIpDefPtr ipdef;
+
+    if (! network->def->adjustFirewall) {
+        return;
+    }
 
     for (ii = 0;
          (ipdef = virNetworkDefGetIpByIndex(network->def, AF_UNSPEC, ii));

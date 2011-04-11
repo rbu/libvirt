@@ -77,6 +77,16 @@
                 </choice>
               </attribute>
             </optional>
+
+            <optional>
+              <attribute name="adjustFirewall">
+                <choice>
+                  <value>on</value>
+                  <value>off</value>
+                </choice>
+              </attribute>
+            </optional>
+
           </element>
         </optional>
 
