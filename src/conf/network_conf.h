@@ -69,6 +69,7 @@ struct _virNetworkDef {
 
     int forwardType;    /* One of virNetworkForwardType constants */
     char *forwardDev;   /* Destination device for forwarding */
+    int adjustFirewall : 1;   /* If libvirt should add/remove iptables rules */
 
     char *ipAddress;    /* Bridge IP address */
     char *netmask;

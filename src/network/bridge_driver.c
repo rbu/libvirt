@@ -707,6 +707,10 @@ networkAddIptablesRules(struct network_driver *driver,
                         virNetworkObjPtr network) {
     int err;
 
+    if (! network->def->adjustFirewall) {
+        return 1;
+    }
+
     /* allow DHCP requests through to dnsmasq */
     if ((err = iptablesAddTcpInput(driver->iptables, network->def->bridge, 67))) {
         virReportSystemError(err,
@@ -811,6 +815,11 @@ networkAddIptablesRules(struct network_driver *driver,
 static void
 networkRemoveIptablesRules(struct network_driver *driver,
                          virNetworkObjPtr network) {
+
+    if (! network->def->adjustFirewall) {
+        return;
+    }
+
     if (network->def->forwardType != VIR_NETWORK_FORWARD_NONE) {
         if (network->def->forwardType == VIR_NETWORK_FORWARD_NAT) {
             iptablesRemoveForwardMasquerade(driver->iptables,
